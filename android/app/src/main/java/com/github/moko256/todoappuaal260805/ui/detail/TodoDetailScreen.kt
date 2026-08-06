@@ -14,15 +14,42 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.github.moko256.todoappuaal260805.TodoApplication
+import com.github.moko256.todoappuaal260805.data.Task
 import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
+
+@Composable
+fun TodoDetailScreen(
+    todoId: Int,
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val application = LocalContext.current.applicationContext as TodoApplication
+    val viewModel: TodoDetailViewModel = viewModel(
+        factory = TodoDetailViewModel.factory(
+            taskId = todoId,
+            taskRepository = application.container.taskRepository,
+        ),
+    )
+    val task by viewModel.task.collectAsStateWithLifecycle()
+    TodoDetailScreen(
+        task = task,
+        onBack = onBack,
+        modifier = modifier,
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoDetailScreen(
-    todoId: String,
+    task: Task?,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -30,7 +57,7 @@ fun TodoDetailScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Todo detail") },
+                title = { Text(task?.title ?: "Todo detail") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -49,15 +76,23 @@ fun TodoDetailScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(
-                text = "Todo ID",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-            Text(
-                text = todoId,
-                style = MaterialTheme.typography.headlineSmall,
-            )
+            if (task == null) {
+                Text(
+                    text = "Loading…",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                Text(
+                    text = "Description",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                Text(
+                    text = task.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
         }
     }
 }
@@ -66,6 +101,13 @@ fun TodoDetailScreen(
 @Composable
 private fun TodoDetailScreenPreview() {
     Todo_app_uaal_260805Theme {
-        TodoDetailScreen(todoId = "todo-1", onBack = {})
+        TodoDetailScreen(
+            task = Task(
+                id = 1,
+                title = "Buy milk",
+                description = "2% milk from the corner store",
+            ),
+            onBack = {},
+        )
     }
 }
