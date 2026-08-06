@@ -1,6 +1,5 @@
 package com.github.moko256.todoappuaal260805.ui.newscene
 
-import com.github.moko256.todoappuaal260805.data.Task
 import com.github.moko256.todoappuaal260805.data.TaskRepository
 import com.github.moko256.todoappuaal260805.data.local.TaskDao
 import com.github.moko256.todoappuaal260805.data.local.TaskEntity
