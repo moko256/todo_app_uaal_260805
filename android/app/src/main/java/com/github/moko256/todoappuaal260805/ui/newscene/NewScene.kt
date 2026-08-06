@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -67,7 +68,12 @@ fun NewScene(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("New todo") },
+                title = {
+                    Text(
+                        text = "New todo",
+                        style = MaterialTheme.typography.titleLargeEmphasized,
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onClose) {
                         Icon(
@@ -78,7 +84,10 @@ fun NewScene(
                 },
                 actions = {
                     TextButton(onClick = onAdd) {
-                        Text("追加")
+                        Text(
+                            text = "追加",
+                            style = MaterialTheme.typography.labelLargeEmphasized,
+                        )
                     }
                 },
             )

@@ -51,7 +51,12 @@ fun TodoDetailScreen(
         modifier = modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text(task?.title ?: "Todo detail") },
+                title = {
+                    Text(
+                        text = task?.title ?: "Todo detail",
+                        style = MaterialTheme.typography.titleLargeEmphasized,
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -79,7 +84,7 @@ fun TodoDetailScreen(
             } else {
                 Text(
                     text = "Description",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.labelLargeEmphasized,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
