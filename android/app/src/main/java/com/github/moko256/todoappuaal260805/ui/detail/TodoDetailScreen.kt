@@ -16,12 +16,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.github.moko256.todoappuaal260805.TodoApplication
 import com.github.moko256.todoappuaal260805.data.Task
 import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
 
@@ -30,14 +28,10 @@ fun TodoDetailScreen(
     todoId: Int,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: TodoDetailViewModel = hiltViewModel<TodoDetailViewModel, TodoDetailViewModel.Factory>(
+        creationCallback = { factory -> factory.create(todoId) },
+    ),
 ) {
-    val application = LocalContext.current.applicationContext as TodoApplication
-    val viewModel: TodoDetailViewModel = viewModel(
-        factory = TodoDetailViewModel.factory(
-            taskId = todoId,
-            taskRepository = application.container.taskRepository,
-        ),
-    )
     val task by viewModel.task.collectAsStateWithLifecycle()
     TodoDetailScreen(
         task = task,

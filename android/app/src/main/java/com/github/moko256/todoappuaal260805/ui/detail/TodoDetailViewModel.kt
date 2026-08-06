@@ -1,16 +1,20 @@
 package com.github.moko256.todoappuaal260805.ui.detail
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.github.moko256.todoappuaal260805.data.Task
 import com.github.moko256.todoappuaal260805.data.TaskRepository
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
-class TodoDetailViewModel(
-    taskId: Int,
+@HiltViewModel(assistedFactory = TodoDetailViewModel.Factory::class)
+class TodoDetailViewModel @AssistedInject constructor(
+    @Assisted taskId: Int,
     taskRepository: TaskRepository,
 ) : ViewModel() {
     val task: StateFlow<Task?> = taskRepository
@@ -21,19 +25,8 @@ class TodoDetailViewModel(
             initialValue = null,
         )
 
-    companion object {
-        fun factory(
-            taskId: Int,
-            taskRepository: TaskRepository,
-        ): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    if (modelClass.isAssignableFrom(TodoDetailViewModel::class.java)) {
-                        return TodoDetailViewModel(taskId, taskRepository) as T
-                    }
-                    throw IllegalArgumentException("Unknown ViewModel class: ${modelClass.name}")
-                }
-            }
+    @AssistedFactory
+    interface Factory {
+        fun create(taskId: Int): TodoDetailViewModel
     }
 }

@@ -19,12 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.github.moko256.todoappuaal260805.TodoApplication
 import com.github.moko256.todoappuaal260805.data.Task
 import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
 
@@ -32,11 +30,8 @@ import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
 fun HomeScreen(
     onTodoClick: (todoId: Int) -> Unit,
     modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val application = LocalContext.current.applicationContext as TodoApplication
-    val viewModel: HomeViewModel = viewModel(
-        factory = HomeViewModel.factory(application.container.taskRepository),
-    )
     val tasks by viewModel.tasks.collectAsStateWithLifecycle()
     HomeScreen(
         tasks = tasks,
