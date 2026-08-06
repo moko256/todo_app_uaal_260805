@@ -1308,7 +1308,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   binGoalDetector: {fileID: 1847291006}
   ballLauncher: {fileID: 1847291011}
-  unloadDelaySeconds: 0.75
+  gameEndScreenPrefab: {fileID: 1000000001, guid: 0cbabb6cd68f4c7cb4dbe214e50d5162, type: 3}
+  endScreenDisplaySeconds: 3
 --- !u!1 &2900000001
 GameObject:
   m_ObjectHideFlags: 0
