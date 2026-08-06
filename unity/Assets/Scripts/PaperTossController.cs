@@ -2,7 +2,6 @@ using UnityEngine;
 
 /// <summary>
 /// MainScene 上のカメラ / ball / bin をまとめて接続するエントリポイント。
-/// Inspector から参照と各パラメータを調整できる。
 /// </summary>
 public class PaperTossController : MonoBehaviour
 {
@@ -16,7 +15,6 @@ public class PaperTossController : MonoBehaviour
 
     [Header("Startup Aim")]
     [SerializeField] private float initialPitch = 8f;
-    [SerializeField] private float initialYaw = 0f;
 
     private void Awake()
     {
@@ -27,26 +25,8 @@ public class PaperTossController : MonoBehaviour
     {
         if (swipeAimCamera != null)
         {
-            swipeAimCamera.ResetAim(initialPitch, initialYaw);
+            swipeAimCamera.ResetAim(initialPitch);
         }
-
-        if (binGoalDetector != null)
-        {
-            binGoalDetector.Scored += HandleScored;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (binGoalDetector != null)
-        {
-            binGoalDetector.Scored -= HandleScored;
-        }
-    }
-
-    private void HandleScored()
-    {
-        // 必要なら UI や効果音をここから拡張する
     }
 
     [ContextMenu("Auto Wire References")]

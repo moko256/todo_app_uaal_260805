@@ -3,44 +3,26 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 /// <summary>
-/// スマートフォンの上下スワイプでカメラのピッチ（必要ならヨー）を操作する。
-/// UI 上のポインタ操作は無視する。
+/// 上下スワイプでカメラのピッチだけを操作する。UI 上の操作は無視する。
 /// </summary>
 public class SwipeAimCamera : MonoBehaviour
 {
-    [Header("References")]
     [SerializeField] private Transform cameraTransform;
-
-    [Header("Aim Limits")]
     [SerializeField] private float minPitch = -25f;
     [SerializeField] private float maxPitch = 45f;
-    [SerializeField] private float minYaw = -40f;
-    [SerializeField] private float maxYaw = 40f;
-    [SerializeField] private bool allowHorizontalAim = true;
-
-    [Header("Sensitivity")]
-    [Tooltip("画面縦方向のピクセル移動に対するピッチ変化量")]
     [SerializeField] private float pitchSensitivity = 0.15f;
-    [Tooltip("画面横方向のピクセル移動に対するヨー変化量")]
-    [SerializeField] private float yawSensitivity = 0.12f;
     [SerializeField] private bool invertPitch = true;
-
-    [Header("Smoothing")]
     [SerializeField] private float aimSmoothTime = 0.05f;
 
     private float _pitch;
-    private float _yaw;
+    private float _baseYaw;
     private float _pitchVelocity;
-    private float _yawVelocity;
     private float _targetPitch;
-    private float _targetYaw;
     private bool _isDragging;
     private bool _ignoreCurrentPointer;
-    private Vector2 _lastPointerPosition;
+    private float _lastPointerY;
 
     public float CurrentPitch => _pitch;
-    public float CurrentYaw => _yaw;
-    public bool IsDragging => _isDragging;
     public Transform CameraTransform => cameraTransform != null ? cameraTransform : transform;
 
     private void Awake()
@@ -52,15 +34,14 @@ public class SwipeAimCamera : MonoBehaviour
 
         Vector3 euler = cameraTransform.localEulerAngles;
         _pitch = NormalizeAngle(euler.x);
-        _yaw = NormalizeAngle(euler.y);
+        _baseYaw = NormalizeAngle(euler.y);
         _targetPitch = _pitch;
-        _targetYaw = _yaw;
     }
 
     private void Update()
     {
         HandlePointerInput();
-        ApplyAimRotation();
+        ApplyPitch();
     }
 
     private void HandlePointerInput()
@@ -71,27 +52,22 @@ public class SwipeAimCamera : MonoBehaviour
             return;
         }
 
-        Vector2 position = pointer.position.ReadValue();
+        float pointerY = pointer.position.ReadValue().y;
 
         if (pointer.press.wasPressedThisFrame)
         {
             _ignoreCurrentPointer = IsPointerOverUi();
             _isDragging = !_ignoreCurrentPointer;
-            _lastPointerPosition = position;
+            _lastPointerY = pointerY;
         }
 
-        if (_isDragging && !_ignoreCurrentPointer && pointer.press.isPressed)
+        if (_isDragging && pointer.press.isPressed)
         {
-            Vector2 delta = position - _lastPointerPosition;
-            _lastPointerPosition = position;
+            float deltaY = pointerY - _lastPointerY;
+            _lastPointerY = pointerY;
 
-            float pitchDelta = delta.y * pitchSensitivity * (invertPitch ? -1f : 1f);
+            float pitchDelta = deltaY * pitchSensitivity * (invertPitch ? -1f : 1f);
             _targetPitch = Mathf.Clamp(_targetPitch + pitchDelta, minPitch, maxPitch);
-
-            if (allowHorizontalAim)
-            {
-                _targetYaw = Mathf.Clamp(_targetYaw + delta.x * yawSensitivity, minYaw, maxYaw);
-            }
         }
 
         if (pointer.press.wasReleasedThisFrame)
@@ -103,46 +79,21 @@ public class SwipeAimCamera : MonoBehaviour
 
     private static bool IsPointerOverUi()
     {
-        EventSystem eventSystem = EventSystem.current;
-        if (eventSystem == null)
-        {
-            return false;
-        }
-
-        if (eventSystem.IsPointerOverGameObject())
-        {
-            return true;
-        }
-
-        Touchscreen touchscreen = Touchscreen.current;
-        if (touchscreen != null && touchscreen.primaryTouch.press.isPressed)
-        {
-            int touchId = touchscreen.primaryTouch.touchId.ReadValue();
-            if (eventSystem.IsPointerOverGameObject(touchId))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
     }
 
-    private void ApplyAimRotation()
+    private void ApplyPitch()
     {
         _pitch = Mathf.SmoothDampAngle(_pitch, _targetPitch, ref _pitchVelocity, aimSmoothTime);
-        _yaw = Mathf.SmoothDampAngle(_yaw, _targetYaw, ref _yawVelocity, aimSmoothTime);
-        cameraTransform.localRotation = Quaternion.Euler(_pitch, _yaw, 0f);
+        cameraTransform.localRotation = Quaternion.Euler(_pitch, _baseYaw, 0f);
     }
 
-    public void ResetAim(float pitch = 0f, float yaw = 0f)
+    public void ResetAim(float pitch = 0f)
     {
         _targetPitch = Mathf.Clamp(pitch, minPitch, maxPitch);
-        _targetYaw = Mathf.Clamp(yaw, minYaw, maxYaw);
         _pitch = _targetPitch;
-        _yaw = _targetYaw;
         _pitchVelocity = 0f;
-        _yawVelocity = 0f;
-        cameraTransform.localRotation = Quaternion.Euler(_pitch, _yaw, 0f);
+        cameraTransform.localRotation = Quaternion.Euler(_pitch, _baseYaw, 0f);
     }
 
     private static float NormalizeAngle(float angle)

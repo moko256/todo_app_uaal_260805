@@ -385,11 +385,7 @@ MonoBehaviour:
   cameraTransform: {fileID: 330585546}
   minPitch: -20
   maxPitch: 40
-  minYaw: -35
-  maxYaw: 35
-  allowHorizontalAim: 1
   pitchSensitivity: 0.15
-  yawSensitivity: 0.12
   invertPitch: 1
   aimSmoothTime: 0.05
 --- !u!1 &410087039
