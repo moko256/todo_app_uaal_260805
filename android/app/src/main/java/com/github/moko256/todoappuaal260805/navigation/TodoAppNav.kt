@@ -12,6 +12,7 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.moko256.todoappuaal260805.ui.detail.TodoDetailScreen
 import com.github.moko256.todoappuaal260805.ui.home.HomeScreen
+import com.github.moko256.todoappuaal260805.ui.newscene.NewScene
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 
@@ -20,6 +21,7 @@ private val navSavedStateConfiguration = SavedStateConfiguration {
         polymorphic(NavKey::class) {
             subclass(AppRoute.Home::class, AppRoute.Home.serializer())
             subclass(AppRoute.TodoDetail::class, AppRoute.TodoDetail.serializer())
+            subclass(AppRoute.New::class, AppRoute.New.serializer())
         }
     }
 }
@@ -50,12 +52,20 @@ fun TodoAppNav(
                     onTodoClick = { todoId ->
                         backStack.add(AppRoute.TodoDetail(todoId))
                     },
+                    onAddClick = {
+                        backStack.add(AppRoute.New)
+                    },
                 )
             }
             entry<AppRoute.TodoDetail> { route ->
                 TodoDetailScreen(
                     todoId = route.todoId,
                     onBack = { backStack.removeLastOrNull() },
+                )
+            }
+            entry<AppRoute.New> {
+                NewScene(
+                    onClose = { backStack.removeLastOrNull() },
                 )
             }
         },

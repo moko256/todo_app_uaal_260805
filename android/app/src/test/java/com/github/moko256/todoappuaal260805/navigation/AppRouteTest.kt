@@ -26,4 +26,12 @@ class AppRouteTest {
         assertTrue(decoded is AppRoute.TodoDetail)
         assertEquals(42, (decoded as AppRoute.TodoDetail).todoId)
     }
+
+    @Test
+    fun new_roundTripsThroughSerialization() {
+        val encoded = json.encodeToString(AppRoute.serializer(), AppRoute.New)
+        val decoded = json.decodeFromString(AppRoute.serializer(), encoded)
+
+        assertEquals(AppRoute.New, decoded)
+    }
 }

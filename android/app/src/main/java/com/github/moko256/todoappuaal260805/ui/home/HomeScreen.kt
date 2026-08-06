@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
@@ -29,6 +33,7 @@ import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
 @Composable
 fun HomeScreen(
     onTodoClick: (todoId: Int) -> Unit,
+    onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -36,6 +41,7 @@ fun HomeScreen(
     HomeScreen(
         tasks = tasks,
         onTodoClick = onTodoClick,
+        onAddClick = onAddClick,
         modifier = modifier,
     )
 }
@@ -45,6 +51,7 @@ fun HomeScreen(
 fun HomeScreen(
     tasks: List<Task>,
     onTodoClick: (todoId: Int) -> Unit,
+    onAddClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -57,6 +64,14 @@ fun HomeScreen(
                 title = { Text("Todos") },
                 scrollBehavior = scrollBehavior,
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddClick) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = "追加",
+                )
+            }
         },
     ) { innerPadding ->
         LazyColumn(
@@ -99,6 +114,7 @@ private fun HomeScreenPreview() {
                 Task(id = 3, title = "Walk the dog", description = "Evening walk around the park"),
             ),
             onTodoClick = {},
+            onAddClick = {},
         )
     }
 }
