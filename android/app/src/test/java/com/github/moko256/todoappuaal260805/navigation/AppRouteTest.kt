@@ -18,12 +18,12 @@ class AppRouteTest {
 
     @Test
     fun todoDetail_roundTripsThroughSerialization() {
-        val route = AppRoute.TodoDetail(todoId = "todo-42")
+        val route = AppRoute.TodoDetail(todoId = 42)
         val encoded = json.encodeToString(AppRoute.serializer(), route)
         val decoded = json.decodeFromString(AppRoute.serializer(), encoded)
 
         assertEquals(route, decoded)
         assertTrue(decoded is AppRoute.TodoDetail)
-        assertEquals("todo-42", (decoded as AppRoute.TodoDetail).todoId)
+        assertEquals(42, (decoded as AppRoute.TodoDetail).todoId)
     }
 }

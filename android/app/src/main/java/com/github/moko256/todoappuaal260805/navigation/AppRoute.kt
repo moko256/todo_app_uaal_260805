@@ -9,5 +9,5 @@ sealed interface AppRoute : NavKey {
     data object Home : AppRoute
 
     @Serializable
-    data class TodoDetail(val todoId: String) : AppRoute
+    data class TodoDetail(val todoId: Int) : AppRoute
 }

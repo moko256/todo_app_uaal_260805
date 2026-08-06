@@ -16,22 +16,40 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.github.moko256.todoappuaal260805.TodoApplication
+import com.github.moko256.todoappuaal260805.data.Task
 import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
 
-private val sampleTodos = listOf(
-    "Buy milk" to "todo-1",
-    "Write report" to "todo-2",
-    "Walk the dog" to "todo-3",
-)
+@Composable
+fun HomeScreen(
+    onTodoClick: (todoId: Int) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val application = LocalContext.current.applicationContext as TodoApplication
+    val viewModel: HomeViewModel = viewModel(
+        factory = HomeViewModel.factory(application.container.taskRepository),
+    )
+    val tasks by viewModel.tasks.collectAsStateWithLifecycle()
+    HomeScreen(
+        tasks = tasks,
+        onTodoClick = onTodoClick,
+        modifier = modifier,
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onTodoClick: (todoId: String) -> Unit,
+    tasks: List<Task>,
+    onTodoClick: (todoId: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -52,19 +70,19 @@ fun HomeScreen(
                 .padding(innerPadding),
             verticalArrangement = Arrangement.Top,
         ) {
-            items(sampleTodos, key = { it.second }) { (title, id) ->
+            items(tasks, key = { it.id }) { task ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onTodoClick(id) }
+                        .clickable { onTodoClick(task.id) }
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                 ) {
                     Text(
-                        text = title,
+                        text = task.title,
                         style = MaterialTheme.typography.titleMedium,
                     )
                     Text(
-                        text = id,
+                        text = task.description,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -79,6 +97,13 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenPreview() {
     Todo_app_uaal_260805Theme {
-        HomeScreen(onTodoClick = {})
+        HomeScreen(
+            tasks = listOf(
+                Task(id = 1, title = "Buy milk", description = "2% milk from the corner store"),
+                Task(id = 2, title = "Write report", description = "Quarterly summary for the team"),
+                Task(id = 3, title = "Walk the dog", description = "Evening walk around the park"),
+            ),
+            onTodoClick = {},
+        )
     }
 }
