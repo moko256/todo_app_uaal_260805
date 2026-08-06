@@ -14,7 +14,7 @@ class TaskRepositoryTest {
     @Test
     fun observeTasks_mapsEntitiesToTasks() = runTest {
         val dao = FakeTaskDao(
-            tasks = listOf(
+            initialTasks = listOf(
                 TaskEntity(id = 1, title = "Buy milk", description = "From store"),
                 TaskEntity(id = 2, title = "Write report", description = "Q1 summary"),
             ),
@@ -35,7 +35,7 @@ class TaskRepositoryTest {
     @Test
     fun observeTask_mapsEntityToTask() = runTest {
         val dao = FakeTaskDao(
-            tasks = listOf(
+            initialTasks = listOf(
                 TaskEntity(id = 7, title = "Walk the dog", description = "Park loop"),
             ),
         )
@@ -71,9 +71,9 @@ class TaskRepositoryTest {
     }
 
     private class FakeTaskDao(
-        initial: List<TaskEntity> = emptyList(),
+        initialTasks: List<TaskEntity> = emptyList(),
     ) : TaskDao {
-        var tasks: List<TaskEntity> = initial
+        var tasks: List<TaskEntity> = initialTasks
             private set
 
         override fun observeAll(): Flow<List<TaskEntity>> = flowOf(tasks)
