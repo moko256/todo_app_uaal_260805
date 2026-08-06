@@ -29,6 +29,9 @@ android {
             optimization {
                 enable = true
             }
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+            )
         }
     }
     compileOptions {
