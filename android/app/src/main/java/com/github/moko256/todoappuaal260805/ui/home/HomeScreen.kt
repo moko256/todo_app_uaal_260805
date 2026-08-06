@@ -7,18 +7,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumFloatingActionButton
 import androidx.compose.material3.MediumFlexibleTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -78,15 +81,21 @@ fun HomeScreen(
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             MediumFlexibleTopAppBar(
-                title = { Text("Todos") },
+                title = {
+                    Text(
+                        text = "Todos",
+                        style = MaterialTheme.typography.headlineMediumEmphasized,
+                    )
+                },
                 scrollBehavior = scrollBehavior,
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddClick) {
+            MediumFloatingActionButton(onClick = onAddClick) {
                 Icon(
                     imageVector = Icons.Filled.Add,
                     contentDescription = "追加",
+                    modifier = Modifier.size(FloatingActionButtonDefaults.MediumIconSize),
                 )
             }
         },
@@ -112,7 +121,12 @@ fun HomeScreen(
                     overlineContent = null,
                     supportingContent = { Text(task.description) },
                     elevation = ListItemDefaults.elevation(ListItemDefaults.Elevation),
-                    content = { Text(task.title) },
+                    content = {
+                        Text(
+                            text = task.title,
+                            style = MaterialTheme.typography.titleMediumEmphasized,
+                        )
+                    },
                 )
                 HorizontalDivider()
             }
