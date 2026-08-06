@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.github.moko256.todoappuaal260805.R
 import com.github.moko256.todoappuaal260805.data.local.AppDatabase
 import com.github.moko256.todoappuaal260805.data.local.TaskDao
 import com.github.moko256.todoappuaal260805.data.local.TaskEntity
@@ -39,16 +40,16 @@ object DatabaseModule {
                             database.taskDao().insertAll(
                                 listOf(
                                     TaskEntity(
-                                        title = "Buy milk",
-                                        description = "2% milk from the corner store",
+                                        title = context.getString(R.string.sample_task_buy_milk_title),
+                                        description = context.getString(R.string.sample_task_buy_milk_description),
                                     ),
                                     TaskEntity(
-                                        title = "Write report",
-                                        description = "Quarterly summary for the team",
+                                        title = context.getString(R.string.sample_task_write_report_title),
+                                        description = context.getString(R.string.sample_task_write_report_description),
                                     ),
                                     TaskEntity(
-                                        title = "Walk the dog",
-                                        description = "Evening walk around the park",
+                                        title = context.getString(R.string.sample_task_walk_the_dog_title),
+                                        description = context.getString(R.string.sample_task_walk_the_dog_description),
                                     ),
                                 ),
                             )

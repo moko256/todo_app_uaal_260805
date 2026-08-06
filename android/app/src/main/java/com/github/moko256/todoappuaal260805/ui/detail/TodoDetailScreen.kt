@@ -16,10 +16,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.github.moko256.todoappuaal260805.R
 import com.github.moko256.todoappuaal260805.data.Task
 import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
 
@@ -53,7 +55,7 @@ fun TodoDetailScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = task?.title ?: "Todo detail",
+                        text = task?.title ?: stringResource(R.string.todo_detail_title),
                         style = MaterialTheme.typography.titleLargeEmphasized,
                     )
                 },
@@ -61,7 +63,7 @@ fun TodoDetailScreen(
                     IconButton(onClick = onBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back),
                         )
                     }
                 },
@@ -77,13 +79,13 @@ fun TodoDetailScreen(
         ) {
             if (task == null) {
                 Text(
-                    text = "Loading…",
+                    text = stringResource(R.string.loading),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             } else {
                 Text(
-                    text = "Description",
+                    text = stringResource(R.string.description),
                     style = MaterialTheme.typography.labelLargeEmphasized,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -103,8 +105,8 @@ private fun TodoDetailScreenPreview() {
         TodoDetailScreen(
             task = Task(
                 id = 1,
-                title = "Buy milk",
-                description = "2% milk from the corner store",
+                title = stringResource(R.string.sample_task_buy_milk_title),
+                description = stringResource(R.string.sample_task_buy_milk_description),
             ),
             onBack = {},
         )

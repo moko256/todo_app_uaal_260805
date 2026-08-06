@@ -28,10 +28,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.github.moko256.todoappuaal260805.MainUnityActivity
+import com.github.moko256.todoappuaal260805.R
 import com.github.moko256.todoappuaal260805.data.Task
 import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
 
@@ -80,7 +82,7 @@ fun HomeScreen(
             MediumFlexibleTopAppBar(
                 title = {
                     Text(
-                        text = "Todos",
+                        text = stringResource(R.string.home_title),
                         style = MaterialTheme.typography.headlineMediumEmphasized,
                     )
                 },
@@ -93,10 +95,10 @@ fun HomeScreen(
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Add",
+                        contentDescription = stringResource(R.string.add),
                     )
                 },
-                text = { Text("Add") },
+                text = { Text(stringResource(R.string.add)) },
             )
         },
     ) { innerPadding ->
@@ -114,7 +116,7 @@ fun HomeScreen(
                         IconButton(onClick = { onDeleteClick(task.id) }) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
-                                contentDescription = "削除",
+                                contentDescription = stringResource(R.string.delete),
                             )
                         }
                     },
@@ -138,9 +140,21 @@ private fun HomeScreenPreview() {
     Todo_app_uaal_260805Theme {
         HomeScreen(
             tasks = listOf(
-                Task(id = 1, title = "Buy milk", description = "2% milk from the corner store"),
-                Task(id = 2, title = "Write report", description = "Quarterly summary for the team"),
-                Task(id = 3, title = "Walk the dog", description = "Evening walk around the park"),
+                Task(
+                    id = 1,
+                    title = stringResource(R.string.sample_task_buy_milk_title),
+                    description = stringResource(R.string.sample_task_buy_milk_description),
+                ),
+                Task(
+                    id = 2,
+                    title = stringResource(R.string.sample_task_write_report_title),
+                    description = stringResource(R.string.sample_task_write_report_description),
+                ),
+                Task(
+                    id = 3,
+                    title = stringResource(R.string.sample_task_walk_the_dog_title),
+                    description = stringResource(R.string.sample_task_walk_the_dog_description),
+                ),
             ),
             onTodoClick = {},
             onAddClick = {},

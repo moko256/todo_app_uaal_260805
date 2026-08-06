@@ -22,9 +22,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.github.moko256.todoappuaal260805.R
 import com.github.moko256.todoappuaal260805.ui.theme.Todo_app_uaal_260805Theme
 
 @Composable
@@ -70,7 +72,7 @@ fun NewScene(
             TopAppBar(
                 title = {
                     Text(
-                        text = "New todo",
+                        text = stringResource(R.string.new_todo_title),
                         style = MaterialTheme.typography.titleLargeEmphasized,
                     )
                 },
@@ -78,14 +80,14 @@ fun NewScene(
                     IconButton(onClick = onClose) {
                         Icon(
                             imageVector = Icons.Filled.Close,
-                            contentDescription = "閉じる",
+                            contentDescription = stringResource(R.string.close),
                         )
                     }
                 },
                 actions = {
                     TextButton(onClick = onAdd) {
                         Text(
-                            text = "Add",
+                            text = stringResource(R.string.add),
                             style = MaterialTheme.typography.labelLargeEmphasized,
                         )
                     }
@@ -104,14 +106,14 @@ fun NewScene(
                 value = title,
                 onValueChange = onTitleChange,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Title") },
+                label = { Text(stringResource(R.string.title)) },
                 singleLine = true,
             )
             OutlinedTextField(
                 value = description,
                 onValueChange = onDescriptionChange,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Description") },
+                label = { Text(stringResource(R.string.description)) },
             )
         }
     }
@@ -122,8 +124,8 @@ fun NewScene(
 private fun NewScenePreview() {
     Todo_app_uaal_260805Theme {
         NewScene(
-            title = "Buy milk",
-            description = "2% milk from the corner store",
+            title = stringResource(R.string.sample_task_buy_milk_title),
+            description = stringResource(R.string.sample_task_buy_milk_description),
             onTitleChange = {},
             onDescriptionChange = {},
             onClose = {},
