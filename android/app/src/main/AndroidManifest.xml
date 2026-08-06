@@ -24,6 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainUnityActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Todo_app_uaal_260805" />
     </application>
 
 </manifest>
