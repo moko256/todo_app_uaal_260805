@@ -24,8 +24,12 @@ android {
 
     buildTypes {
         release {
+            // Enables R8 code shrinking/obfuscation/optimization and resource shrinking.
+            // Custom keep rules live in src/main/keepRules/*.keep (AGP 9.3+).
+            // Default Android keep rules (proguard-android-optimize.txt equivalent)
+            // are included automatically by the optimization DSL.
             optimization {
-                enable = false
+                enable = true
             }
         }
     }
