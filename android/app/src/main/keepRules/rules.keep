@@ -1,8 +1,13 @@
-# Add project specific R8 rules here.
-# AGP will combine all keep rule files in src/main/keepRules to pass to R8
+# Project-specific R8 keep rules for release optimization.
+# AGP combines all *.keep files under src/main/keepRules and passes them to R8.
+#
+# Default Android platform keep rules are included automatically when using
+# the AGP 9.3+ optimization {} DSL. Hilt, Room, and kotlinx.serialization
+# also ship consumer keep rules via their AAR/JAR metadata.
 #
 # For more details, see
 #   https://d.android.com/r/tools/r8/keep-rules
+#   https://developer.android.com/topic/performance/app-optimization/enable-app-optimization
 
 # If your project uses WebView with JS, uncomment the following
 # and specify the fully qualified class name to the JavaScript interface
