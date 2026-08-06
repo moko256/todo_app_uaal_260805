@@ -6,12 +6,15 @@ import com.github.moko256.todoappuaal260805.data.local.asEntity
 import com.github.moko256.todoappuaal260805.data.local.asExternalModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Data-layer single source of truth for tasks.
  * Converts Room [TaskDao] entities into external [Task] models for the UI layer.
  */
-class TaskRepository(
+@Singleton
+class TaskRepository @Inject constructor(
     private val taskDao: TaskDao,
 ) {
     fun observeTasks(): Flow<List<Task>> =
