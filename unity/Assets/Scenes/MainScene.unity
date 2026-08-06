@@ -1212,6 +1212,7 @@ GameObject:
   - component: {fileID: 1847291008}
   - component: {fileID: 1847291009}
   - component: {fileID: 1847291011}
+  - component: {fileID: 1847291030}
   m_Layer: 0
   m_Name: PaperToss
   m_TagString: Untagged
@@ -1249,6 +1250,7 @@ MonoBehaviour:
   swipeAimCamera: {fileID: 1847291010}
   ballLauncher: {fileID: 1847291011}
   binGoalDetector: {fileID: 1847291006}
+  throwButtonUI: {fileID: 1847291030}
   ball: {fileID: 952939948}
   bin: {fileID: 889708618}
   initialPitch: 12
@@ -1268,19 +1270,38 @@ MonoBehaviour:
   ballRigidbody: {fileID: 1847291012}
   throwOrigin: {fileID: 330585546}
   aimCamera: {fileID: 1847291010}
+  throwButton: {fileID: 0}
   holdLocalOffset: {x: 0, y: -0.15, z: 0.45}
   holdLocalEuler: {x: 0, y: 0, z: 0}
   visualCenterOffset: {x: 0.8113202, y: 0.17781997, z: -0.15533}
-  baseThrowForce: 4.5
-  swipeForceMultiplier: 0.035
+  throwForce: 4.5
   minThrowForce: 2.5
   maxThrowForce: 12
-  minSwipeSpeed: 400
-  requireUpwardSwipe: 1
   upwardThrowBias: 0.15
-  throwForceMode: 2
+  throwForceMode: 3
   autoResetSeconds: 4
   scoredResetDelay: 1.25
+--- !u!114 &1847291030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1847291007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f3c7b6a5d4e3c2b1a0f9e8d7c6b5a4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ballLauncher: {fileID: 1847291011}
+  canvas: {fileID: 0}
+  throwButton: {fileID: 0}
+  buttonLabel: "\u6295\u3052\u308B"
+  anchoredPosition: {x: 0, y: 96}
+  buttonSize: {x: 260, y: 88}
+  fontSize: 42
+  blockColor: {r: 0.12, g: 0.45, b: 0.28, a: 0.95}
+  labelColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

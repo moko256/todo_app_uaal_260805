@@ -1,8 +1,10 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 /// <summary>
 /// スマートフォンの上下スワイプでカメラのピッチ（必要ならヨー）を操作する。
+/// UI 上のポインタ操作は無視する。
 /// </summary>
 public class SwipeAimCamera : MonoBehaviour
 {
@@ -33,6 +35,7 @@ public class SwipeAimCamera : MonoBehaviour
     private float _targetPitch;
     private float _targetYaw;
     private bool _isDragging;
+    private bool _ignoreCurrentPointer;
     private Vector2 _lastPointerPosition;
 
     public float CurrentPitch => _pitch;
@@ -72,11 +75,12 @@ public class SwipeAimCamera : MonoBehaviour
 
         if (pointer.press.wasPressedThisFrame)
         {
-            _isDragging = true;
+            _ignoreCurrentPointer = IsPointerOverUi();
+            _isDragging = !_ignoreCurrentPointer;
             _lastPointerPosition = position;
         }
 
-        if (_isDragging && pointer.press.isPressed)
+        if (_isDragging && !_ignoreCurrentPointer && pointer.press.isPressed)
         {
             Vector2 delta = position - _lastPointerPosition;
             _lastPointerPosition = position;
@@ -93,7 +97,34 @@ public class SwipeAimCamera : MonoBehaviour
         if (pointer.press.wasReleasedThisFrame)
         {
             _isDragging = false;
+            _ignoreCurrentPointer = false;
         }
+    }
+
+    private static bool IsPointerOverUi()
+    {
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null)
+        {
+            return false;
+        }
+
+        if (eventSystem.IsPointerOverGameObject())
+        {
+            return true;
+        }
+
+        Touchscreen touchscreen = Touchscreen.current;
+        if (touchscreen != null && touchscreen.primaryTouch.press.isPressed)
+        {
+            int touchId = touchscreen.primaryTouch.touchId.ReadValue();
+            if (eventSystem.IsPointerOverGameObject(touchId))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void ApplyAimRotation()

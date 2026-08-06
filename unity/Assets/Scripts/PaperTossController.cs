@@ -10,6 +10,7 @@ public class PaperTossController : MonoBehaviour
     [SerializeField] private SwipeAimCamera swipeAimCamera;
     [SerializeField] private BallLauncher ballLauncher;
     [SerializeField] private BinGoalDetector binGoalDetector;
+    [SerializeField] private ThrowButtonUI throwButtonUI;
     [SerializeField] private Transform ball;
     [SerializeField] private Transform bin;
 
@@ -64,6 +65,11 @@ public class PaperTossController : MonoBehaviour
         if (binGoalDetector == null)
         {
             binGoalDetector = FindFirstObjectByType<BinGoalDetector>();
+        }
+
+        if (throwButtonUI == null)
+        {
+            throwButtonUI = FindFirstObjectByType<ThrowButtonUI>();
         }
 
         if (ball == null)

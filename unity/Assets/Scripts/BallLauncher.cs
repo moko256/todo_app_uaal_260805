@@ -1,10 +1,10 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// カメラの向いている方向へ ball を打ち出す。
-/// 指を離したときのスワイプ速度に応じて勢いを変える。
+/// uGUI の「投げる」ボタンから呼び出される想定。
 /// </summary>
 public class BallLauncher : MonoBehaviour
 {
@@ -12,6 +12,7 @@ public class BallLauncher : MonoBehaviour
     [SerializeField] private Rigidbody ballRigidbody;
     [SerializeField] private Transform throwOrigin;
     [SerializeField] private SwipeAimCamera aimCamera;
+    [SerializeField] private Button throwButton;
 
     [Header("Hold Pose")]
     [SerializeField] private Vector3 holdLocalOffset = new Vector3(0f, -0.15f, 0.45f);
@@ -20,14 +21,9 @@ public class BallLauncher : MonoBehaviour
     [SerializeField] private Vector3 visualCenterOffset = new Vector3(0.8113202f, 0.17781997f, -0.15533f);
 
     [Header("Throw")]
-    [SerializeField] private float baseThrowForce = 4.5f;
-    [SerializeField] private float swipeForceMultiplier = 0.035f;
+    [SerializeField] private float throwForce = 4.5f;
     [SerializeField] private float minThrowForce = 2.5f;
     [SerializeField] private float maxThrowForce = 12f;
-    [Tooltip("このスワイプ速度（px/秒）未満なら打ち出さない")]
-    [SerializeField] private float minSwipeSpeed = 400f;
-    [Tooltip("上方向スワイプのみ打ち出す場合は true")]
-    [SerializeField] private bool requireUpwardSwipe = true;
     [SerializeField] private float upwardThrowBias = 0.15f;
     [SerializeField] private ForceMode throwForceMode = ForceMode.VelocityChange;
 
@@ -42,9 +38,6 @@ public class BallLauncher : MonoBehaviour
     private bool _isHeld = true;
     private bool _hasThrown;
     private bool _isResetScheduled;
-    private Vector2 _lastPosition;
-    private float _lastMoveTime;
-    private Vector2 _recentVelocity;
 
     public bool HasThrown => _hasThrown;
     public bool IsHeld => _isHeld;
@@ -72,6 +65,22 @@ public class BallLauncher : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if (throwButton != null)
+        {
+            throwButton.onClick.AddListener(ThrowBall);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (throwButton != null)
+        {
+            throwButton.onClick.RemoveListener(ThrowBall);
+        }
+    }
+
     private void Start()
     {
         HoldBall();
@@ -79,55 +88,40 @@ public class BallLauncher : MonoBehaviour
 
     private void Update()
     {
-        HandlePointerInput();
-
         if (_isHeld)
         {
             FollowHoldPose();
         }
     }
 
-    private void HandlePointerInput()
+    public void SetThrowButton(Button button)
     {
-        if (_hasThrown || ballRigidbody == null)
+        if (throwButton != null)
         {
-            return;
+            throwButton.onClick.RemoveListener(ThrowBall);
         }
 
-        Pointer pointer = Pointer.current;
-        if (pointer == null)
+        throwButton = button;
+
+        if (isActiveAndEnabled && throwButton != null)
         {
-            return;
+            throwButton.onClick.AddListener(ThrowBall);
         }
 
-        Vector2 position = pointer.position.ReadValue();
-        float now = Time.unscaledTime;
+        RefreshThrowButtonState();
+    }
 
-        if (pointer.press.wasPressedThisFrame)
-        {
-            _lastPosition = position;
-            _lastMoveTime = now;
-            _recentVelocity = Vector2.zero;
-        }
-
-        if (pointer.press.isPressed)
-        {
-            float dt = Mathf.Max(now - _lastMoveTime, 0.0001f);
-            Vector2 frameDelta = position - _lastPosition;
-            _recentVelocity = frameDelta / dt;
-            _lastPosition = position;
-            _lastMoveTime = now;
-        }
-
-        if (pointer.press.wasReleasedThisFrame)
-        {
-            TryThrow(_recentVelocity);
-        }
+    /// <summary>
+    /// uGUI ボタンの OnClick から呼ぶ。
+    /// </summary>
+    public void ThrowBall()
+    {
+        LaunchInCameraDirection();
     }
 
     private void FollowHoldPose()
     {
-        if (throwOrigin == null)
+        if (throwOrigin == null || ballRigidbody == null)
         {
             return;
         }
@@ -136,36 +130,6 @@ public class BallLauncher : MonoBehaviour
         ballTransform.rotation = throwOrigin.rotation * Quaternion.Euler(holdLocalEuler);
         Vector3 holdPoint = throwOrigin.TransformPoint(holdLocalOffset);
         ballTransform.position = holdPoint - ballTransform.rotation * visualCenterOffset;
-    }
-
-    public void TryThrow(Vector2 swipeVelocityPixelsPerSecond)
-    {
-        if (_hasThrown || ballRigidbody == null)
-        {
-            return;
-        }
-
-        float upwardSpeed = swipeVelocityPixelsPerSecond.y;
-        float swipeSpeed = swipeVelocityPixelsPerSecond.magnitude;
-
-        if (requireUpwardSwipe && upwardSpeed < minSwipeSpeed * 0.25f)
-        {
-            return;
-        }
-
-        if (swipeSpeed < minSwipeSpeed)
-        {
-            return;
-        }
-
-        Transform aimTransform = throwOrigin != null ? throwOrigin : transform;
-        Vector3 direction = (aimTransform.forward + Vector3.up * upwardThrowBias).normalized;
-        float force = Mathf.Clamp(
-            baseThrowForce + swipeSpeed * swipeForceMultiplier,
-            minThrowForce,
-            maxThrowForce);
-
-        ReleaseAndLaunch(direction, force);
     }
 
     public void LaunchInCameraDirection(float forceOverride = -1f)
@@ -179,7 +143,7 @@ public class BallLauncher : MonoBehaviour
         Vector3 direction = (aimTransform.forward + Vector3.up * upwardThrowBias).normalized;
         float force = forceOverride > 0f
             ? Mathf.Clamp(forceOverride, minThrowForce, maxThrowForce)
-            : baseThrowForce;
+            : Mathf.Clamp(throwForce, minThrowForce, maxThrowForce);
 
         ReleaseAndLaunch(direction, force);
     }
@@ -189,13 +153,12 @@ public class BallLauncher : MonoBehaviour
         _isHeld = false;
         _hasThrown = true;
         ThrowStateChanged?.Invoke(true);
+        RefreshThrowButtonState();
 
         ballRigidbody.isKinematic = false;
         ballRigidbody.linearVelocity = Vector3.zero;
         ballRigidbody.angularVelocity = Vector3.zero;
         ballRigidbody.AddForce(direction * force, throwForceMode);
-
-        // 少し回転をつけて紙っぽくする
         ballRigidbody.AddTorque(UnityEngine.Random.insideUnitSphere * force * 0.35f, ForceMode.VelocityChange);
 
         Thrown?.Invoke();
@@ -214,6 +177,7 @@ public class BallLauncher : MonoBehaviour
         _hasThrown = false;
         _isHeld = true;
         ThrowStateChanged?.Invoke(false);
+        RefreshThrowButtonState();
 
         if (ballRigidbody == null)
         {
@@ -225,6 +189,14 @@ public class BallLauncher : MonoBehaviour
         ballRigidbody.isKinematic = true;
         FollowHoldPose();
         ResetReady?.Invoke();
+    }
+
+    private void RefreshThrowButtonState()
+    {
+        if (throwButton != null)
+        {
+            throwButton.interactable = !_hasThrown;
+        }
     }
 
     private void ScheduleReset(float delay)
@@ -243,7 +215,7 @@ public class BallLauncher : MonoBehaviour
     {
         minThrowForce = Mathf.Max(0.1f, minThrowForce);
         maxThrowForce = Mathf.Max(minThrowForce, maxThrowForce);
-        minSwipeSpeed = Mathf.Max(0f, minSwipeSpeed);
+        throwForce = Mathf.Clamp(throwForce, minThrowForce, maxThrowForce);
         autoResetSeconds = Mathf.Max(0.1f, autoResetSeconds);
         scoredResetDelay = Mathf.Max(0.1f, scoredResetDelay);
     }
