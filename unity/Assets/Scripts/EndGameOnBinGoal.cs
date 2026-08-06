@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 public class EndGameOnBinGoal : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Scene References")]
     [SerializeField] private BinGoalDetector binGoalDetector;
     [SerializeField] private BallLauncher ballLauncher;
 
@@ -16,19 +16,6 @@ public class EndGameOnBinGoal : MonoBehaviour
     [SerializeField] private float unloadDelaySeconds = 0.75f;
 
     private bool _isEnding;
-
-    private void Awake()
-    {
-        if (binGoalDetector == null)
-        {
-            binGoalDetector = FindFirstObjectByType<BinGoalDetector>();
-        }
-
-        if (ballLauncher == null)
-        {
-            ballLauncher = FindFirstObjectByType<BallLauncher>();
-        }
-    }
 
     private void OnEnable()
     {

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 /// </summary>
 public class BallLauncher : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Scene References")]
     [SerializeField] private Rigidbody ballRigidbody;
     [SerializeField] private Transform throwOrigin;
     [SerializeField] private SwipeAimCamera aimCamera;
@@ -45,23 +45,9 @@ public class BallLauncher : MonoBehaviour
 
     private void Awake()
     {
-        if (aimCamera == null)
-        {
-            aimCamera = FindFirstObjectByType<SwipeAimCamera>();
-        }
-
         if (throwOrigin == null && aimCamera != null)
         {
             throwOrigin = aimCamera.CameraTransform;
-        }
-
-        if (ballRigidbody == null)
-        {
-            GameObject ballObject = GameObject.Find("ball");
-            if (ballObject != null)
-            {
-                ballRigidbody = ballObject.GetComponent<Rigidbody>();
-            }
         }
     }
 

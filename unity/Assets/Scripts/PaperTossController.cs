@@ -16,58 +16,11 @@ public class PaperTossController : MonoBehaviour
     [Header("Startup Aim")]
     [SerializeField] private float initialPitch = 8f;
 
-    private void Awake()
-    {
-        AutoWireIfNeeded();
-    }
-
     private void Start()
     {
         if (swipeAimCamera != null)
         {
             swipeAimCamera.ResetAim(initialPitch);
-        }
-    }
-
-    [ContextMenu("Auto Wire References")]
-    private void AutoWireIfNeeded()
-    {
-        if (swipeAimCamera == null)
-        {
-            swipeAimCamera = FindFirstObjectByType<SwipeAimCamera>();
-        }
-
-        if (ballLauncher == null)
-        {
-            ballLauncher = FindFirstObjectByType<BallLauncher>();
-        }
-
-        if (binGoalDetector == null)
-        {
-            binGoalDetector = FindFirstObjectByType<BinGoalDetector>();
-        }
-
-        if (throwButtonUI == null)
-        {
-            throwButtonUI = FindFirstObjectByType<ThrowButtonUI>();
-        }
-
-        if (ball == null)
-        {
-            GameObject ballObject = GameObject.Find("ball");
-            if (ballObject != null)
-            {
-                ball = ballObject.transform;
-            }
-        }
-
-        if (bin == null)
-        {
-            GameObject binObject = GameObject.Find("bin");
-            if (binObject != null)
-            {
-                bin = binObject.transform;
-            }
         }
     }
 }

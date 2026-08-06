@@ -8,9 +8,10 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Collider))]
 public class BinGoalDetector : MonoBehaviour
 {
-    [Header("Filter")]
+    [Header("Scene References")]
     [SerializeField] private string ballTag = "Ball";
     [SerializeField] private Rigidbody ballRigidbody;
+    [SerializeField] private BallLauncher ballLauncher;
     [SerializeField] private bool requireDownwardEntry = true;
     [SerializeField] private float maxUpwardVelocityToScore = 0.5f;
 
@@ -38,34 +39,23 @@ public class BinGoalDetector : MonoBehaviour
         {
             col.isTrigger = true;
         }
-
-        if (ballRigidbody == null)
-        {
-            GameObject ballObject = GameObject.Find("ball");
-            if (ballObject != null)
-            {
-                ballRigidbody = ballObject.GetComponent<Rigidbody>();
-            }
-        }
     }
 
     private void OnEnable()
     {
-        BallLauncher launcher = FindFirstObjectByType<BallLauncher>();
-        if (launcher != null)
+        if (ballLauncher != null)
         {
-            launcher.ThrowStateChanged += OnThrowStateChanged;
-            launcher.ResetReady += OnBallReset;
+            ballLauncher.ThrowStateChanged += OnThrowStateChanged;
+            ballLauncher.ResetReady += OnBallReset;
         }
     }
 
     private void OnDisable()
     {
-        BallLauncher launcher = FindFirstObjectByType<BallLauncher>();
-        if (launcher != null)
+        if (ballLauncher != null)
         {
-            launcher.ThrowStateChanged -= OnThrowStateChanged;
-            launcher.ResetReady -= OnBallReset;
+            ballLauncher.ThrowStateChanged -= OnThrowStateChanged;
+            ballLauncher.ResetReady -= OnBallReset;
         }
     }
 
@@ -104,10 +94,9 @@ public class BinGoalDetector : MonoBehaviour
         onScored?.Invoke();
         Scored?.Invoke();
 
-        BallLauncher launcher = FindFirstObjectByType<BallLauncher>();
-        if (launcher != null)
+        if (ballLauncher != null)
         {
-            launcher.NotifyScored();
+            ballLauncher.NotifyScored();
         }
 
         Debug.Log("Goal! Ball entered the bin.");
