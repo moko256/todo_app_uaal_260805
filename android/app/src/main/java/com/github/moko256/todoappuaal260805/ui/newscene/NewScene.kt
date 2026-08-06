@@ -68,13 +68,15 @@ fun NewScene(
         topBar = {
             TopAppBar(
                 title = { Text("New todo") },
-                actions = {
+                navigationIcon = {
                     IconButton(onClick = onClose) {
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = "閉じる",
                         )
                     }
+                },
+                actions = {
                     TextButton(onClick = onAdd) {
                         Text("追加")
                     }
