@@ -4,27 +4,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
-import androidx.savedstate.compose.rememberSerializable
+import androidx.savedstate.serialization.SavedStateConfiguration
 import com.github.moko256.todoappuaal260805.ui.detail.TodoDetailScreen
 import com.github.moko256.todoappuaal260805.ui.home.HomeScreen
-import kotlinx.serialization.serializer
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
+
+private val navSavedStateConfiguration = SavedStateConfiguration {
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclass(AppRoute.Home::class, AppRoute.Home.serializer())
+            subclass(AppRoute.TodoDetail::class, AppRoute.TodoDetail.serializer())
+        }
+    }
+}
 
 @Composable
 fun rememberAppNavBackStack(
     vararg startRoutes: AppRoute = arrayOf(AppRoute.Home),
-): NavBackStack<AppRoute> {
-    return rememberSerializable(serializer = serializer()) {
-        NavBackStack(*startRoutes)
-    }
+): NavBackStack<NavKey> {
+    return rememberNavBackStack(navSavedStateConfiguration, *startRoutes)
 }
 
 @Composable
 fun TodoAppNav(
     modifier: Modifier = Modifier,
-    backStack: NavBackStack<AppRoute> = rememberAppNavBackStack(),
+    backStack: NavBackStack<NavKey> = rememberAppNavBackStack(),
 ) {
     NavDisplay(
         backStack = backStack,
