@@ -95,9 +95,14 @@ if ! grep -q 'org.gradle.java.installations.paths' "$HOME/.gradle/gradle.propert
   echo 'org.gradle.java.installations.paths=/opt/jdk/current' >> "$HOME/.gradle/gradle.properties"
 fi
 
-# 6. Warm Gradle wrapper + dependency caches and validate the build -----------
+# 6. Warm Gradle wrapper + dependency caches ---------------------------------
+# Soft-fail: agents often edit sources while install is still running, so a
+# mid-change compile error must not mark environment setup as INSTALL_FAILED.
+# AGENTS.md already has agents run assembleDebug / unit tests themselves.
 log "Warming Gradle caches (building debug APK) ..."
 chmod +x "$REPO_ROOT/android/gradlew"
-( cd "$REPO_ROOT/android" && ./gradlew :app:assembleDebug )
+if ! ( cd "$REPO_ROOT/android" && ./gradlew :app:assembleDebug ); then
+  log "WARNING: assembleDebug failed (non-fatal). JDK/SDK toolchain is ready; agents can rebuild after code changes."
+fi
 
 log "Cloud Agent environment ready."
